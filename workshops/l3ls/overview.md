@@ -115,7 +115,7 @@ Each group_vars file is listed in the following tabs.
     ---
     fabric_name: SITE1_FABRIC
 
-    # Set Design Type to L2ls
+    # Set Design Type to l3ls-evpn
     design:
       type: l3ls-evpn
 
@@ -426,7 +426,7 @@ AVD provides a network-wide data model and is typically broken into multiple gro
 
 ### Fabric Topology
 
-The physical fabric topology is defined by providing interface links between the spine and leaf nodes. The `group_vars/SITE1_FABRIC.yml` file defines this portion of the data model. In our lab, the spines provide layer 3 routing of SVIs and P2P links using a node type called `l3spines`. The leaf nodes are purely layer 2 and use node type `leaf`. An AVD L2LS design type provides three node type keys: l3 spine, spine, and leaf. AVD Node Type documentation can be found **[here](https://avd.arista.com/4.8/roles/eos_designs/docs/input-variables.html#node-type-variables)**.
+The physical fabric topology is defined by providing interface links between the spine and leaf nodes. The `group_vars/SITE1_FABRIC.yml` file defines this portion of the data model. In our lab, the spines provide layer 3 routing of SVIs and P2P links using a node type called `l3spines`. The leaf nodes are purely layer 2 and use node type `leaf`. An AVD L3LS design type provides three node type keys: l3 spine, spine, and leaf. AVD Node Type documentation can be found **[here](https://avd.arista.com/4.8/roles/eos_designs/docs/input-variables.html#node-type-variables)**.
 
 #### Spine and Leaf Nodes
 

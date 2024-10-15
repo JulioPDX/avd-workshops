@@ -1623,7 +1623,7 @@ The `sites/site_1/group_vars/SITE1_FABRIC.yml` file should now look like the exa
     ---
     fabric_name: SITE1_FABRIC
 
-    # Set Design Type to L2ls
+    # Set Design Type to l3ls-evpn
     design:
       type: l3ls-evpn
 
