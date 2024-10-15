@@ -107,7 +107,7 @@ TODO Rewrite the following section to leverage the makefile option
 
 ## Step 3 - Fast-forward the main brach
 
-We need to update our group variable files to enable all of our L2LS configurations.
+We must update our group variable files to enable our L2LS configurations.
 
 !!! warning
     You can skip this step if you are continuing from the AVD workshop.
@@ -115,7 +115,7 @@ We need to update our group variable files to enable all of our L2LS configurati
 Move to the following directory within your terminal.
 
 ```shell
-cd labs/L2LS/
+cd /home/coder/project/labfiles/ci-workshops-avd/labs/L2LS
 ```
 
 Run the following Make command to update your group variable files for site 1 and site 2.
@@ -303,6 +303,7 @@ jobs:
 To get started with pre-commit, run the following commands in your ATD IDE terminal.
 
 ```shell
+cd /home/coder/project/labfiles/ci-workshops-avd/
 pip3 install pre-commit
 pre-commit install
 ```
@@ -501,7 +502,7 @@ At this point, make sure both workflow files (`dev.yml` and `prod.yml`) within t
             uses: actions/setup-python@v5
 
           - name: Install Python requirements
-            run: pip3 install "pyavd[ansible]==4.10.0"
+            run: pip3 install requirements.txt
 
           - name: Run pre-commit on files
             uses: pre-commit/action@v3.0.0
@@ -590,6 +591,7 @@ This example workflow will add two new VLANs to our sites. Site 1 will add VLAN 
 The pipeline will run the build and deploy steps for us with these relevant changes. We can also run the build steps locally to see all our pending updates.
 
 ```shell
+cd /home/coder/project/labfiles/ci-workshops-avd/labs/L2LS
 make build-site-1
 ```
 
@@ -761,7 +763,7 @@ jobs:
         uses: actions/setup-python@v5
 
       - name: Install Python requirements
-        run: pip3 install "pyavd[ansible]==4.10.0"
+        run: pip3 install requirements.txt
 
       - name: Run pre-commit on files
         uses: pre-commit/action@v3.0.0
