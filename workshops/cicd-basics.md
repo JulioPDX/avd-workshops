@@ -1,6 +1,6 @@
 # CI/CD
 
-This section walks you through an example CI/CD pipeline leveraging GitHub Actions, Arista Validated Designs (AVD), and the Arista CloudVision Platform (CVP). In addition, the lab leverages the Arista Test Drive (ATD) solution to give you a pre-built environment to get started quickly. This section assumes readers have completed the [AVD L2LS workshop](l2ls/l2ls-lab-guide.md) within their ATD environment.
+This section walks you through an example CI/CD pipeline leveraging GitHub Actions, Arista Validated Designs (AVD), and the Arista CloudVision Platform (CVP). In addition, the lab leverages the Arista Test Drive (ATD) solution to give you a pre-built environment to get started quickly. This section assumes readers have completed the [AVD L2LS workshop](l2ls/l2ls-lab-guide.md) within their ATD environment. If you still need to complete the AVD L2LS workshop, there are instructions in this guide to get you updated.
 
 Readers should be familiar with the following concepts.
 
@@ -31,42 +31,46 @@ pip3 install "pyavd[ansible]==4.10.0"
 ansible-galaxy collection install -r requirements.yml
 ```
 
-## **Step 1 - Fork and clone the repository**
+## Step 1 - Fork and clone the repository
 
 You will be creating your own CI/CD pipeline in this workflow. Log in to your GitHub account and fork the [`ci-workshops-avd`](https://github.com/aristanetworks/ci-workshops-avd/) repository to get started.
 
 !!! warning
-    You can skip these steps if you are continuing from the AVD workshop.
+    You can skip this steps if you are continuing from the AVD workshop.
 
 ![Create fork](assets/images/create-fork.png)
 
 ![Save fork](assets/images/save-fork.png)
 
+Make sure to hit the copy radio button before moving on to the next step.
+
+![Copy fork](assets/images/copy-fork.png)
+
 1. On the IDE terminal, run the following commands:
 
-   ```shell
-   cd /home/coder/project/labfiles
-   ```
+    ```shell
+    cd /home/coder/project/labfiles
+    ```
 
-   ```shell
-   git clone <your copied URL>
-   ```
+    ```shell
+    git clone <your copied URL>
+    ```
 
-   ```shell
-   cd ci-workshops-avd
-   ```
+    ```shell
+    cd ci-workshops-avd
+    ```
 
 2. Configure your global Git settings.
 
-   ```shell
-   git config --global user.name "FirstName LastName"
-   ```
+    ```shell
+    git config --global user.name "FirstName LastName"
+    ```
 
-   ```shell
-   git config --global user.email "name@example.com"
-   ```
+    ```shell
+    git config --global user.email "name@example.com"
+    ```
 
-## **Step 2 - ATD programmability IDE installation**
+## Step 2 - ATD programmability IDE installation
 
 You can check the current AVD version by running the following command:
 
@@ -99,29 +103,28 @@ pip3 install "pyavd[ansible-collection]==4.10.0"
 ansible-galaxy collection install -r requirements.yml
 ```
 
-## **Step 3 - Fast-forward the main brach**
+TODO Rewrite the following section to leverage the makefile option
 
-On the programmability IDE, merge the `cicd-ff` branch into the `main` branch.
+## Step 3 - Fast-forward the main brach
+
+We need to update our group variable files to enable all of our L2LS configurations.
 
 !!! warning
     You can skip this step if you are continuing from the AVD workshop.
 
-```shell
-git merge origin/cicd-ff
-```
-
-???+ note
-    You may get a note to edit the commit message, enter ***windows*** ++ctrl++ + X or ***mac*** ++cmd++ + X to save the message and exit out of the text editor.
-
-If you got the dreaded `merge: origin/cicd-ff - not something we can merge` error, you may have missed unchecking the `Copy the main branch only` option when forking. You can continue by running the following commands within the workshops directory on the IDE terminal.
+Move to the following directory within your terminal.
 
 ```shell
-git remote add upstream https://github.com/aristanetworks/ci-workshops-avd.git
-git fetch upstream
-git merge upstream/cicd-ff
+cd labs/L2LS/
 ```
 
-## **Step 4 - Setup lab password environment variable**
+Run the following Make command to update your group variable files for site 1 and site 2.
+
+```shell
+make cicd-ff
+```
+
+## Step 4 - Setup lab password environment variable
 
 Each lab comes with a unique password. We set an environment variable called `LABPASSPHRASE` with the following command. The variable is later used to generate local user passwords and connect to our switches to push configs.
 
@@ -132,9 +135,12 @@ Each lab comes with a unique password. We set an environment variable called `LA
 export LABPASSPHRASE=`awk '/password:/{print $2}' /home/coder/.config/code-server/config.yaml`
 ```
 
-## **Step 5 - Configure the IP Network**
+## Step 5 - Configure the IP Network
 
 The nodes that connect the two sites are out of scope for this workshop. We can get the hosts and EOS nodes in the IP network configured by running the `make preplab` command.
+
+!!! warning
+    You can skip this steps if you are continuing from the AVD workshop.
 
 ```shell
 make preplab
@@ -142,7 +148,7 @@ make preplab
 
 The host and IP Network nodes will now be configured.
 
-## **Step 6 - Enable GitHub actions**
+## Step 6 - Enable GitHub actions
 
 1. Go to Actions
 2. Click `I understand my workflows, go ahead and enable them`
@@ -173,11 +179,11 @@ You will need to set one secret in your newly forked GitHub repository.
 !!! note
     Our workflow uses this secret to authenticate with our CVP instance.
 
-## **Step 7 - Update local CVP variables**
+## Step 7 - Update local CVP variables
 
 Every user will get a unique CVP instance deployed. There are two updates required.
 
-1. Add the `ansible_host` variable under the `cvp` host in the `/home/coder/project/labfiles/ci-workshops-avd/sites/site_1/inventory.yml` file. The domain name can be located at the top of your ATD lab environment.
+1. Add the `ansible_host` variable under the `cvp` host in the `/home/coder/project/labfiles/ci-workshops-avd/labs/L2LS/sites/site_1/inventory.yml` file. The domain name can be located at the top of your ATD lab environment.
 
     ```yaml
     ---
@@ -190,7 +196,7 @@ Every user will get a unique CVP instance deployed. There are two updates requir
        ...
     ```
 
-2. Add the `ansible_host` variable under the `cvp` host in the `/home/coder/project/labfiles/ci-workshops-avd/sites/site_2/inventory.yml` file.
+2. Add the `ansible_host` variable under the `cvp` host in the `/home/coder/project/labfiles/ci-workshops-avd/labs/L2LS/sites/site_2/inventory.yml` file.
 
     ```yaml
     ---
@@ -206,7 +212,7 @@ Every user will get a unique CVP instance deployed. There are two updates requir
 !!! note
     These will be the same value. Make sure to remove any prefix like `https://` or anything after `.com`
 
-## **Step 8 - Sync with remote repository**
+## Step 8 - Sync with remote repository
 
 1. From the IDE terminal, run the following:
 
@@ -219,7 +225,7 @@ Every user will get a unique CVP instance deployed. There are two updates requir
 !!! note
     If the Git `user.name` and `user.email` are set, they may be skipped. You can check this by running the `git config --list` command. You will get a notification to sign in to GitHub. Follow the prompts.
 
-## **Step 9 - Create a new branch**
+## Step 9 - Create a new branch
 
 In a moment, we will be deploying changes to our environment. In reality, updates to a code repository would be done from a development or feature branch. We will follow this same workflow.
 
@@ -230,7 +236,7 @@ In a moment, we will be deploying changes to our environment. In reality, update
 git checkout -b dc-updates
 ```
 
-## **Step 10 - GitHub Actions**
+## Step 10 - GitHub Actions
 
 GitHub Actions is a CI/CD platform within GitHub. We can leverage GitHub Actions to create automated workflows within our repository. These workflows can be as simple as notifying appropriate reviewers of a change and automating the entire release of an application or network infrastructure.
 
@@ -314,14 +320,14 @@ repos:
     rev: v4.4.0
     hooks:
       - id: trailing-whitespace
-        files: sites/site_1/group_vars/|sites/site_2/group_vars/
+        files: labs/L2LS/sites/site_1/group_vars/|labs/L2LS/sites/site_2/group_vars/
 
       - id: end-of-file-fixer
         exclude_types: [svg, json]
-        files: sites/site_1/group_vars/|sites/site_2/group_vars/
+        files: labs/L2LS/sites/site_1/group_vars/|labs/L2LS/sites/site_2/group_vars/
 
       - id: check-yaml
-        files: sites/site_1/group_vars/|sites/site_2/group_vars/
+        files: labs/L2LS/sites/site_1/group_vars/|labs/L2LS/sites/site_2/group_vars/
 ```
 
 Finally, the setup Python and install requirements action above the pre-commit step installs Python dependencies in this workflow.
@@ -379,16 +385,16 @@ fix end of files.........................................................Failed
 - exit code: 1
 - files were modified by this hook
 
-Fixing sites/site_1/group_vars/SITE1_FABRIC_SERVICES.yml
+Fixing labs/L2LS/sites/site_1/group_vars/SITE1_FABRIC_SERVICES.yml
 
 check yaml...............................................................Failed
 - hook id: check-yaml
 - exit code: 1
 
 while parsing a block mapping
-  in "sites/site_1/group_vars/SITE1_FABRIC_SERVICES.yml", line 25, column 17
+  in "labs/L2LS/sites/site_1/group_vars/SITE1_FABRIC_SERVICES.yml", line 25, column 17
 did not find expected key
-  in "sites/site_1/group_vars/SITE1_FABRIC_SERVICES.yml", line 27, column 17
+  in "labs/L2LS/sites/site_1/group_vars/SITE1_FABRIC_SERVICES.yml", line 27, column 17
 
 ➜  ci-workshops-avd git:(main) ✗
 ```
@@ -433,7 +439,7 @@ Currently, our workflow will build and deploy configurations for both sites. Thi
         with:
           filters: |
             workflows:
-              - 'sites/site_1/**'
+              - 'labs/L2LS/sites/site_1/**'
 
       - name: Check paths for sites/site_2
         uses: dorny/paths-filter@v3
@@ -441,7 +447,7 @@ Currently, our workflow will build and deploy configurations for both sites. Thi
         with:
           filters: |
             workflows:
-              - 'sites/site_2/**'
+              - 'labs/L2LS/sites/site_2/**'
 ...
 ```
 
@@ -457,10 +463,12 @@ The Ansible collection install and test configuration steps have the conditional
 
       - name: Test configuration for site1
         run: make build-site-1
+        working-directory: labs/L2LS/
         if: steps.filter-site1.outputs.workflows == 'true'
 
       - name: Test configuration for site2
         run: make build-site-2
+        working-directory: labs/L2LS/
         if: steps.filter-site2.outputs.workflows == 'true'
 
 ```
@@ -504,7 +512,7 @@ At this point, make sure both workflow files (`dev.yml` and `prod.yml`) within t
             with:
               filters: |
                 workflows:
-                  - 'sites/site_1/**'
+                  - 'labs/L2LS/sites/site_1/**'
 
           - name: Check paths for sites/site_2
             uses: dorny/paths-filter@v3
@@ -512,7 +520,7 @@ At this point, make sure both workflow files (`dev.yml` and `prod.yml`) within t
             with:
               filters: |
                 workflows:
-                  - 'sites/site_2/**'
+                  - 'labs/L2LS/sites/site_2/**'
 
           - name: Install collections
             run: ansible-galaxy collection install -r requirements.yml
@@ -520,18 +528,20 @@ At this point, make sure both workflow files (`dev.yml` and `prod.yml`) within t
 
           - name: Test configuration for site1
             run: make build-site-1
+            working-directory: labs/L2LS/
             if: steps.filter-site1.outputs.workflows == 'true'
 
           - name: Test configuration for site2
             run: make build-site-2
+            working-directory: labs/L2LS/
             if: steps.filter-site2.outputs.workflows == 'true'
     ```
 
-## **Step 11 - Day-2 Operations - New service (VLAN)**
+## Step 11 - Day-2 Operations - New service (VLAN)
 
 This example workflow will add two new VLANs to our sites. Site 1 will add VLAN 25, and site 2 will add VLAN 45. An example of the updated group_vars is below. The previous workshop modified the configuration of our devices directly through eAPI. This example will leverage GitHub actions with CloudVision to update our nodes. The provisioning with CVP will also create a new container topology and configlet assignment per device. For starters, we can update site 1.
 
-??? "sites/site_1/group_vars/SITE1_FABRIC_SERVICES.yml"
+??? "labs/L2LS/sites/site_1/group_vars/SITE1_FABRIC_SERVICES.yml"
     ```yaml
     ---
     tenants:
@@ -586,7 +596,7 @@ make build-site-1
 Feel free to check out the changes made to your local files. Please make sure the GitHub workflows are uncommented. We can now push all of our changes and submit a pull request.
 
 !!! note
-    The GitHub workflows are located in the `atd-cicd/.github/workflows` directory.
+    The GitHub workflows are located in the `.github/workflows` directory.
 
 ```shell
 git add .
@@ -605,7 +615,7 @@ If you navigate back to your GitHub repository, you should see an action executi
 
 Since this is a development branch, we are only testing for valid variable files so that AVD can successfully build our configurations. We can run one more example before deploying to production. You may notice the test configuration step was only initiated for site 1 and was skipped for site 2 (no changes). You can finish this example by updating the site 2 fabric services file.
 
-??? "sites/site_2/group_vars/SITE2_FABRIC_SERVICES.yml"
+??? "labs/L2LS/sites/site_2/group_vars/SITE2_FABRIC_SERVICES.yml"
     ```yaml
     ---
     tenants:
@@ -660,7 +670,7 @@ Once complete, the GitHub actions will show changes on sites 1 and 2.
 
 ![Actions](assets/images/actions-both.png)
 
-## **Step 12 -  Creating a pull request to deploy updates (main branch)**
+## Step 12 -  Creating a pull request to deploy updates (main branch)
 
 We have activated our GitHub workflows and tested our configurations. We are now ready to create a pull request.
 
@@ -733,7 +743,7 @@ on:
 
 The rest of the workflow file is the exact same as `dev.yml`. The other subtle difference is that now, depending on the files changed, we will run the build playbooks as well as the playbooks responsible for deploying with CloudVision.
 
-```yaml hl_lines="43-49"
+```yaml hl_lines="44 49"
 jobs:
   deploy-prod:
     env:
@@ -762,7 +772,7 @@ jobs:
         with:
           filters: |
             workflows:
-              - 'sites/site_1/**'
+              - 'labs/L2LS/sites/site_1/**'
 
       - name: Check paths for sites/site_2
         uses: dorny/paths-filter@v3
@@ -770,7 +780,7 @@ jobs:
         with:
           filters: |
             workflows:
-              - 'sites/site_2/**'
+              - 'labs/L2LS/sites/site_2/**'
 
       - name: Install collections
         run: ansible-galaxy collection install -r requirements.yml
@@ -778,10 +788,12 @@ jobs:
 
       - name: Build and deploy site1
         run: make build-site-1 cvp-site-1
+        working-directory: labs/L2LS/
         if: steps.filter-site1.outputs.workflows == 'true'
 
       - name: Build and deploy site2
         run: make build-site-2 cvp-site-2
+        working-directory: labs/L2LS/
         if: steps.filter-site2.outputs.workflows == 'true'
 
 ```
